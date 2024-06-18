@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #e0e7ff; /* Soft blue background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            color: #333;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #1e3a8a; /* Dark blue color */
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        h2 {
+            color: #1e3a8a; /* Dark blue color */
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: bold;
+            color: #4b5563; /* Cool gray */
+            font-size: 16px;
+        }
+
+        input[type="url"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #9ca3af; /* Light gray */
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #1e40af; /* Blue */
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #1d4ed8; /* Lighter blue */
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #result {
+            margin-top: 20px;
+        }
+
+        #shortUrl {
+            font-size: 18px;
+            color: #1e3a8a; /* Dark blue color */
+            word-break: break-all;
+        }
+
+        table {
+            width: 90%;
+            max-width: 800px;
+            border-collapse: collapse;
+            margin-top: 30px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 15px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #1e40af; /* Blue */
+            color: #fff;
+            font-weight: normal;
+        }
+
+        td {
+            background-color: #f9fafb; /* Very light gray */
+        }
+
+        td a {
+            color: #1e40af; /* Blue */
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        td a:hover {
+            color: #1d4ed8; /* Lighter blue */
+            text-decoration: underline;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #f3f4f6; /* Slightly darker light gray */
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            input[type="url"], button {
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>URL Shortener</h1>
+        <form method="POST" action="/url">
+            <label for="longUrl">Enter your Original URL:</label>
+            <input type="url" id="longUrl" name="url" placeholder="http://example.com" required>
+            <button type="submit">Shorten</button>
+        </form>
+        <div id="result" class="<%= locals.id ? '' : 'hidden' %>">
+            <% if (locals.id) { %>
+                <h2>Shortened URL:</h2>
+                <a href="http://localhost:3000/url/<%= locals.id %>" target="_blank">http://localhost:3000/url/<%= locals.id %></a>
+            <% } else { %>
+                <p>URL Not Found</p>
+            <% } %>
+        </div>
+    </div>
+    <% if (locals.urls && locals.urls.length > 0) { %>
+        <h2>Your URLs</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sr. No</th>
+                    <th>Original URL</th>
+                    <th>Shortened URL</th>
+                    <th>Clicks</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% locals.urls.slice().reverse().forEach(function(url, index) { %>
+                    <tr>
+                        <td><%= index + 1 %></td>
+                        <td><%= url.redirectURL %></td>
+                        <td><a href="http://localhost:3000/url/<%= url.shortId %>" target="_blank">http://localhost:3000/url/<%= url.shortId %></a></td>
+                        <td><%= url.visitHistory.length %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    <% } %>
+</body>
+</html>
